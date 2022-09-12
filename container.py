@@ -19,12 +19,14 @@ class MeanInput:
         self._rE, self._rI = np.meshgrid(self._r, self._r)
     
     def landscapes(self):
-        eqE = np.sqrt(self.KE) * self.JEE * self._rE - \
-              np.sqrt(self.KI) * np.abs(self.JEI) * self._rI + \
-              np.sqrt(self.KX) * self.JEX * self.rX
-        eqI = np.sqrt(self.KE) * self.JIE * self._rE - \
-              np.sqrt(self.KI) * np.abs(self.JII) * self._rI + \
-              np.sqrt(self.KX) * self.JIX * self.rX
+        gamma_I = np.sqrt(self.KI) / np.sqrt(self.KE)
+        gamma_X = np.sqrt(self.KX) / np.sqrt(self.KE)
+        eqE = self.JEE * self._rE - \
+              gamma_I * np.abs(self.JEI) * self._rI + \
+              gamma_X * self.JEX * self.rX
+        eqI = self.JIE * self._rE - \
+              gamma_I * np.abs(self.JII) * self._rI + \
+              gamma_X * self.JIX * self.rX
 
         eq = np.abs(eqE) + np.abs(eqI)
         rImin_idx, rEmin_idx = np.unravel_index(eq.argmin(), eqE.shape)

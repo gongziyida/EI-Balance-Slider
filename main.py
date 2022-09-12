@@ -54,9 +54,9 @@ if __name__ == '__main__':
     # adjust the main plot to make room for the sliders
     fig.subplots_adjust(bottom=0.6)
 
-    txt = fig.text(0.2, 0.42, 'rE* = %s, rI* = %s\neqE* = %.3f, eqI* = %.3f' % \
+    tx1 = fig.text(0.2, 0.42, 'rE* = %s, rI* = %s\neqE* = %.3f, eqI* = %.3f' % \
                    (*format_str(rEmins, rImins), eqEmin, eqImin))
-    txt = fig.text(0.5, 0.42, ('EE/IE = %.2f, EI/II = %.2f, EX/IX = %.2f\n'+ \
+    tx2 = fig.text(0.5, 0.42, ('EE/IE = %.2f, EI/II = %.2f, EX/IX = %.2f\n'+ \
                                'IE/II = %.2f, sqrt(K_I/K_E) = %.2f') % \
                    p.ratios())
     
@@ -66,8 +66,10 @@ if __name__ == '__main__':
         eq, eqE, eqI, eqEmin, eqImin, rEmins, rImins = p.landscapes()
         eqE = TwoSlopeNorm(vcenter=0.)(eqE)
         eqI = TwoSlopeNorm(vcenter=0.)(eqI)
-        txt.set_text('rE* = %s, rI* = %s\neqE* = %.3f, eqI* = %.3f' % \
+        tx1.set_text('rE* = %s, rI* = %s\neqE* = %.3f, eqI* = %.3f' % \
                      (*format_str(rEmins, rImins), eqEmin, eqImin))
+        tx2.set_text(('EE/IE = %.2f, EI/II = %.2f, EX/IX = %.2f\n'+ \
+                      'IE/II = %.2f, sqrt(K_I/K_E) = %.2f') % p.ratios())
         extent = [*p.r_range, *p.r_range]
         im0.set_data(eq)
         imE.set_data(eqE)
@@ -94,9 +96,11 @@ if __name__ == '__main__':
     # Create a `matplotlib.widgets.Button` to reset the sliders to initial values.
     resetax = fig.add_axes([0.8, 0.02, 0.1, 0.04])
     def reset(event):
-        txt.set_text('rE* = %s, rI* = %s\neqE* = %.3f, eqI* = %.3f' % \
-                     (*format_str(rEmins, rImins), eqEmin, eqImin))
         p.reset()
+        tx1.set_text('rE* = %s, rI* = %s\neqE* = %.3f, eqI* = %.3f' % \
+                     (*format_str(rEmins, rImins), eqEmin, eqImin))
+        tx2.set_text(('EE/IE = %.2f, EI/II = %.2f, EX/IX = %.2f\n'+ \
+                      'IE/II = %.2f, sqrt(K_I/K_E) = %.2f') % p.ratios())
         for k, (a, s) in ax_sliders.items():
             s.reset()
     button = Button(resetax, 'Reset', hovercolor='0.975')
