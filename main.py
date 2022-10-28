@@ -55,9 +55,8 @@ if __name__ == '__main__':
     fig.subplots_adjust(bottom=0.6)
 
     tx1 = fig.text(0.2, 0.42, 'rE* = %s, rI* = %s\neqE* = %.3f, eqI* = %.3f' % \
-                   (*format_str(rEmins, rImins), eqEmin, eqImin))
-    tx2 = fig.text(0.5, 0.42, ('EE/IE = %.2f, EI/II = %.2f, EX/IX = %.2f\n'+ \
-                               'IE/II = %.2f, sqrt(K_I/K_E) = %.2f') % \
+                   (*format_str(rEmins.mean(), rImins.mean()), eqEmin.mean(), eqImin.mean()))
+    tx2 = fig.text(0.5, 0.42, ('EE/IE = %.2f, EI/II = %.2f, EX/IX = %.2f') % \
                    p.ratios())
     
     # The function to be called anytime a slider's value changes
@@ -67,9 +66,8 @@ if __name__ == '__main__':
         eqE = TwoSlopeNorm(vcenter=0.)(eqE)
         eqI = TwoSlopeNorm(vcenter=0.)(eqI)
         tx1.set_text('rE* = %s, rI* = %s\neqE* = %.3f, eqI* = %.3f' % \
-                     (*format_str(rEmins, rImins), eqEmin, eqImin))
-        tx2.set_text(('EE/IE = %.2f, EI/II = %.2f, EX/IX = %.2f\n'+ \
-                      'IE/II = %.2f, sqrt(K_I/K_E) = %.2f') % p.ratios())
+                     (*format_str(rEmins.mean(), rImins.mean()), eqEmin.mean(), eqImin.mean()))
+        tx2.set_text(('EE/IE = %.2f, EI/II = %.2f, EX/IX = %.2f') % p.ratios())
         extent = [*p.r_range, *p.r_range]
         im0.set_data(eq)
         imE.set_data(eqE)
@@ -87,7 +85,8 @@ if __name__ == '__main__':
             ax=ax_sl,
             label=n,
             valmin=0.0,
-            valmax=0.5,
+            valmax=0.2,
+            valstep=0.01,
             valinit=getattr(MeanInput, n),
         )
         sl.on_changed(update) # register the update function with each slider

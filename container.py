@@ -13,7 +13,7 @@ class MeanInput:
     JIX = 0.02
     rX = 0.1
     r_range = (0, 1)
-    def __init__(self, resolution=500):
+    def __init__(self, resolution=1000):
         self.res = resolution
         self._r = np.linspace(*MeanInput.r_range, num=resolution)
         self._rE, self._rI = np.meshgrid(self._r, self._r)
@@ -29,15 +29,17 @@ class MeanInput:
               gamma_X * self.JIX * self.rX
 
         eq = np.abs(eqE) + np.abs(eqI)
-        rImin_idx, rEmin_idx = np.unravel_index(eq.argmin(), eqE.shape)
+        # argmin only gives the index of the first min
+        # rImin_idx, rEmin_idx = np.unravel_index(eq.argmin(), eqE.shape)
+        rImin_idx, rEmin_idx = np.where(eq == eq.min())
         rEmins, rImins = self._r[rEmin_idx], self._r[rImin_idx]
         eqEmin, eqImin = eqE[rEmin_idx, rImin_idx], eqI[rEmin_idx, rImin_idx]
-        
+
         return eq, eqE, eqI, eqEmin, eqImin, rEmins, rImins
     
     def ratios(self):
-        return self.JEE/self.JIE, self.JEI/self.JII, self.JEX/self.JIX, \
-               self.JIE/self.JII, np.sqrt(self.KI/self.KE)
+        return self.JEE/self.JIE, self.JEI/self.JII, self.JEX/self.JIX#, \
+               # self.JIE/self.JII, np.sqrt(self.KI/self.KE)
     
     def reset(self):
         for i in ('NE','NI','NX','KE','KI','KX',
